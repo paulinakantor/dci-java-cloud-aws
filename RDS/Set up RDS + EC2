@@ -1,0 +1,34 @@
+2. Project work (group) - RDS
+
+Setup own RDS and extend the hello world example from last step to connect and use this RDS.
+
+Follow the steps:
+
+1. Create RDS instance in AWS console. Select PostgreSQL as a type, and dev purposes. Remember to make it Publicity accessible.
+
+2. Modify your default Security Group to allow Inbound traffic of type PostgreSQL from IP of your computer.
+
+3. Test instance connection via IntelliJ or another database client (e.g. DBeaver).
+
+4. Modyfy your last project:
+- Add dependencies: Spring Boot Data JPA and Postgresql
+- Add in application.properties database related props:
+
+spring.datasource.url=jdbc:postgresql://endpoint/postgres
+spring.datasource.username=your_username
+spring.datasource.password=your_password
+spring.jpa.hibernate.ddl-auto=create-drop
+
+your_username and your_password are the ones that you set when creating RDS instance
+endpoint - you can find it under Connectivity & Security section of your RDS instance.
+
+
+- Create entity: Employee with fields: id (long, use proper adnotation with strategy), name (string), role (string)
+- Create EmployeeRepository by extending Spring JpaRepository
+- Create rest endpoint and expose 2 methods: to add a new Employee and to List existing employees
+
+5. Run your application locally and test exposed endpoints by using Postman 
+
+6. Upload your modified jar to EC2 using steps from the last projects
+
+7. Test your application on EC2

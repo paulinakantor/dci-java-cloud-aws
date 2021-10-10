@@ -1,0 +1,63 @@
+1. Project work (group) - Setup own EC2
+
+Step up an EC2 instance with your Spring Boot application. Expose endpoint and test it.
+
+Follow the steps:
+
+1. Create Spring Boot application:
+- you can use Spring Initiallzr for that
+- it should be using Java 17
+- it should be using Maven
+- add a Maven dependency: spring-boot-starter-web
+
+2. Add rest controller with GET endpoint that will return a string (e.g. GET /helloAws)
+
+3. Prepare the fat jar file with Maven using command: mvn clean install
+
+4. Create new EC2 Instance in AWS console, choose free tier Linux machine with default settings.
+E.g. Amazon Linux 2 AMI (HVM), SSD Volume Type, t2.micro.
+You should use default VPC, default Subnet, default Storage settings.
+You can use existing, default Security Group, or create a new one - just remember what you chose.
+When clicking "Launch" the creator will ask you about key pair. If you chose to create a new key pair, download it and remember where you store it - you won't be able to connect to your EC2 instance without it!
+
+5. Modify Security Group that you selected/created in step 4. 
+It can be found under Network and Security section in EC2 dashboard, on the left side bar. 
+Allow inbound traffic from your computer IP by selecting type: "All Traffic" and Source: "My IP".
+
+6. Copy jar file from your local machine to AWS EC2 using SCP (Mac, Linux) or SCP client (if you use Windows).
+
+Set proper permissions to the key pair file:
+chmod 400 yourkeypair.pem
+
+Copy .jar file with your app to home directory of EC2 machine:
+scp -i ./yourkeypair.pem ./yourApplicationName.jar ec2-user@yourPublicIPv4DNS:~
+
+yourPublicIPv4DNS - You need to find it under Instance Details -> Public IPv4 DNS on EC2 Dashboard.
+
+7. SSH into the EC2 instance and download and install Java 17. 
+
+SSH:
+ssh -i "yourkeypair.pem" ec2-user@yourPublicIPv4DNS
+
+Download:
+wget https://download.oracle.com/java/17/latest/jdk-17_linuxx64_bin.rpm
+
+Install:
+sudo rpm -Uvh jdk-17_linux-x64_bin.rpm
+
+8. Run the Spring Boot application on EC2. 
+
+So SSH to your machine -> run command: java -jar yourApplicationName.jar
+
+Test your application by entering URL:
+
+http://yourPublicIPv4DNS:8080/helloAws
+
+Make sure it's HTTP (NOT https).
+
+9. To make it work, allow inbound traffic on a port 8080 on your instance security group by selecting:
+- type: "Custom TCP" 
+- port range: "8080"
+- source: "My IP"
+
+10. Test your application again
